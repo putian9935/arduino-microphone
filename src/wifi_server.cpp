@@ -3,11 +3,11 @@
 #include "../include/microphone.hpp"
 #include "server_responses.hpp"
 
-#define TEST_CHAR_OTHERWISE_INVALID(ch)                                        \
-  while (!client.available())                                                  \
-    ;                                                                          \
-  c = client.read();                                                           \
-  if (c != (ch))                                                               \
+#define TEST_CHAR_OTHERWISE_INVALID(ch)   \
+  while (!client.available())             \
+    ;                                     \
+  c = client.read();                      \
+  if (c != (ch))                         \
     return INVALID;
 
 WiFiServer server(80);
@@ -121,24 +121,23 @@ request_type parse_client_request(WiFiClient &client) {
 
 void webpage_handler(WiFiClient &client) {  client.write(page); }
 
+// total record cycles 
+// rec_cycles = 2 * total_time * sample_freq / sample_size
+#define REC_CYCLES 1250 
+
 void audio_handler(WiFiClient &client) {
   client.write(audio_header);
-  uint8_t str[] = {
-      82, 73, 70, 70, 255, 255, 255, 255, 87,  65,  86,  69,  102, 109, 116,
-      32, 16, 0,  0,  0,   1,   0,   1,   0,   128, 62,  0,   0,   0,   125,
-      0,  0,  2,  0,  16,  0,   100, 97,  116, 97,  255, 255, 255, 255,
-  };
-  for (int i = 0; i < 44; ++i)
-    client.write(str[i]);
+  
+  for (int i = 0; i < WAV_FORMAT_HEADER_SIZE; ++i)
+    client.write(wav_format_header[i]);
 
   while (client.connected()) {
-    for (int i = 0; i < 2000; ++i) {
+    for (int i = 0; i < REC_CYCLES; ++i) {
       cur = 0;
-      while (cur < 256)
+      while (cur < MICROPHONE_SAMPLE_SIZE)
         ;
-      client.write(sampleBuffer, 256);
+      client.write(sampleBuffer, MICROPHONE_SAMPLE_SIZE);
     }
-    Serial.println("done");
     break;
   }
 }

@@ -4,7 +4,7 @@
 #include "../include/microphone.hpp"
 #include <PDM.h>
 
-#define MICROPHONE_SAMPLE_SIZE 16384
+#define MICROPHONE_SAMPLE_SIZE 256
 
 // Buffer to read samples into, each sample is 16-bits
 extern char sampleBuffer[MICROPHONE_SAMPLE_SIZE];

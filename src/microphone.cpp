@@ -1,6 +1,5 @@
 #include "../include/microphone.hpp"
 
-
 // default number of output channels
 static const char channels = 1;
 
@@ -9,8 +8,6 @@ static const int frequency = 16000;
 
 char sampleBuffer[MICROPHONE_SAMPLE_SIZE];
 volatile int cur;
-
-
 
 static void onPDMdata() {
   int bytesAvailable = PDM.available();
@@ -32,5 +29,3 @@ void microphone_setup() {
       ;
   }
 }
-
-
